@@ -1,36 +1,35 @@
 const express = require('express');
 const app = express();
 const nodeoutlook = require('nodejs-nodemailer-outlook');
-const nodemailer = require('nodemailer');
+const pdf2base64 = require('pdf-to-base64');
+var fs = require('fs');
+const base64 = require('base64topdf');
 
-let transporter = nodemailer.createTransport({
-    host: 'smtp-mail.outlook.com',
-    secureConnection: false, // TLS requires secureConnection to be false
-    port: 587,
+let encodedPdf = base64.base64Encode('sample.pdf');
+
+let decodedBase64 = base64.base64Decode( encodedPdf, 'sample.pdf');
+
+console.log(typeof encodedPdf);
+
+let mailoption = {
     auth: {
         user: 'pritam.mondal@adamastechconsulting.com',
         pass: 'Destroyer@7044'
     },
-    tls: {
-        // rejectUnauthorized: false,
-        ciphers:'SSLv3'
-    }
-});
-
-let mailoption = {
     from: 'pritam.mondal@adamastechconsulting.com',
     to: 'neelabja@adamastechconsulting.com',
     subject: 'Testing',
-    text: 'Yo man!',
-    attachment: [
-        {
-            path: '/'
+    text: 'Yo man!!!!!!!!!!!!!!!',
+    attachments: [
+        {   
+            filename: 'text1.txt',
+            content: encodedPdf,
+            encoding: 'base64'
         }
-    ]
+    ],
+    onError: (e) => { console.log(e) },
+    onSuccess: (i) => { console.log(i) }
+
 }
 
-transporter.sendMail(mailoption, (err, response) => {
-    if(err)
-        console.log(err)
-    else console.log(response);
-})
+nodeoutlook.sendEmail(mailoption)
