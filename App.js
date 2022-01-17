@@ -1,36 +1,36 @@
-const express = require('express');
-const app = express();
-const nodeoutlook = require('nodejs-nodemailer-outlook');
-const nodemailer = require('nodemailer');
+var nodeoutlook = require('nodejs-nodemailer-outlook');
+var fs = require('fs');
+var express = require('express');
+var app = express();
+var cors = require('cors');
+app.use(cors());
 
-let transporter = nodemailer.createTransport({
-    host: 'smtp-mail.outlook.com',
-    secureConnection: false, // TLS requires secureConnection to be false
-    port: 587,
-    auth: {
-        user: 'pritam.mondal@adamastechconsulting.com',
-        pass: 'Destroyer@7044'
-    },
-    tls: {
-        // rejectUnauthorized: false,
-        ciphers:'SSLv3'
-    }
-});
+app.post('/send_mail/', function (req, resp) {
 
-let mailoption = {
-    from: 'pritam.mondal@adamastechconsulting.com',
-    to: 'neelabja@adamastechconsulting.com',
-    subject: 'Testing',
-    text: 'Yo man!',
-    attachment: [
-        {
-            path: '/'
-        }
-    ]
-}
+    nodeoutlook.sendEmail({
+        auth: {
+            user: "neelabja@adamastechconsulting.com",
+            pass: "Neel@2000"
+        },
+        from: 'neelabja@adamastechconsulting.com',
+        to: 'pritam.mondal@adamastechconsulting.com',
+        subject: 'Mail by node-mailer',
+        text: 'node mailer mail',
+        attachments: [
+            {   
+                filename: 'test.pdf',
+                content: fs.createReadStream('sample.pdf')
+            },
+        ],
+        onError: (e) => console.log(e),
+        onSuccess: (i) => console.log(i)
+    });
+    var responseData = {
+        status: 'success',
+        data: 'true',
+        message: 'mail sent successfully'
+      }
+      resp.send(responseData)
+  });
 
-transporter.sendMail(mailoption, (err, response) => {
-    if(err)
-        console.log(err)
-    else console.log(response);
-})
+  app.listen(5000, () => console.log('Server started on port 5000'));
