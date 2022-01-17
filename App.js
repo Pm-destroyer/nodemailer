@@ -10,7 +10,7 @@ app.post('/send_mail/', function (req, resp) {
     nodeoutlook.sendEmail({
         auth: {
             user: "neelabja@adamastechconsulting.com",
-            pass: "Neel@2000"
+            pass: "*********"
         },
         from: 'neelabja@adamastechconsulting.com',
         to: 'pritam.mondal@adamastechconsulting.com',
